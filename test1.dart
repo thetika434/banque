@@ -5,16 +5,18 @@ void main() {
 
   while (true) {
     print("============= FlexBanque =============");
-    print(" 1. ajouter un nouvel utilisateur ");
-    print(" 2. lister tous les comptes");
-    print(" 3. rechercher un compte");
-    print(" 4. quiter");
+    print(" 1. creer un compte ");
+    print(" 2. faire un depot ");
+
+    print(" 3. lister tous les comptes");
+    print(" 4. rechercher un compte");
+    print(" 5. quiter");
     print("entrer votre choix");
     final choix = stdin.readLineSync();
 
     // 1. le premier cas (ajouter un user)
     if (choix == "1") {
-      print("entrer le nom");
+      print("entrer votre nom");
       String name = String_verification(stdin.readLineSync() ?? '');
       print("creer un numero de compte");
       int account_number = null_verification(
@@ -30,15 +32,32 @@ void main() {
           int.tryParse(stdin.readLineSync() ?? ''),
         );
       }
-      gestionnaire.add_user(name, account_number);
+      gestionnaire.add_user(
+        name,
+        account_number,
+      ); //ajouter un nouvel utilisateur
 
-      // ); // ajouter un utilisateur
       print("enregitrement effectuer avec succes !");
-    } else if (choix == "2") {
+    }
+    //2. faire un depot
+    else if (choix == "2") {
+      print("veuillez entrer votre numero de compte");
+      int account_number = null_verification(
+        int.tryParse(stdin.readLineSync() ?? ''),
+      );
+      var user = gestionnaire.rechercherUser(account_number);
+      if (user == null) {
+        print("[ERREUR] compte non trouve ");
+      } else {
+        user.deposer(account_number);
+      }
+    }
+    // 3.afficher les utilisateurs
+    else if (choix == "3") {
       gestionnaire.displayUser();
     }
     // rechercher un utilisateur
-    else if (choix == "3") {
+    else if (choix == "4") {
       stdout.write("entrer le numero de compte");
       int num = null_verification(int.tryParse(stdin.readLineSync() ?? ''));
       Client? user = gestionnaire.rechercherUser(num);
@@ -52,7 +71,7 @@ void main() {
       }
     }
     // quiter la session
-    else if (choix == "4") {
+    else if (choix == "5") {
       print("merci d'avoir utiliser flexBanque. Au revoir ! ");
       break;
     } else {
@@ -69,6 +88,37 @@ class Client {
   int account_number;
   int solde;
   Client({required this.name, required this.account_number, this.solde = 0});
+
+  // methode pour deposer de l'argent
+
+  void deposer(int moneyAdd) {
+    while (moneyAdd < 0) {
+      print("votre solde doit etre positif ! (ressayer) : ");
+      moneyAdd = null_verification(int.tryParse(stdin.readLineSync() ?? ''));
+    }
+    this.solde += moneyAdd;
+    print(
+      "[SUCCES] depot de ${moneyAdd} effectue avec succes . Nouveau solde : ${this.solde} ",
+    );
+  }
+  // methode pour faire un retrait
+
+  void retrait(int moneyRemove) {
+    while (moneyRemove < 0) {
+      print("votre solde doit etre positif ! (ressayer) : ");
+      moneyRemove = null_verification(int.tryParse(stdin.readLineSync() ?? ''));
+    }
+    if (moneyRemove > this.solde) {
+      print(
+        "solde insuffisant impossible de faire un retrait (veuillez ressayer)",
+      );
+    } else {
+      this.solde -= moneyRemove;
+      print(
+        "[SUCCES] depot de ${moneyRemove} effectue avec succes . Nouveau solde : ${this.solde} ",
+      );
+    }
+  }
 }
 
 //class pour la gestion des clients
