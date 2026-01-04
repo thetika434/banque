@@ -7,10 +7,10 @@ void main() {
     print("============= FlexBanque =============");
     print(" 1. creer un compte ");
     print(" 2. faire un depot ");
-
-    print(" 3. lister tous les comptes");
-    print(" 4. rechercher un compte");
-    print(" 5. quiter");
+    print(" 3. faire un retrait");
+    print(" 4. lister tous les comptes");
+    print(" 5. rechercher un compte");
+    print(" 6. quiter");
     print("entrer votre choix");
     final choix = stdin.readLineSync();
 
@@ -49,15 +49,36 @@ void main() {
       if (user == null) {
         print("[ERREUR] compte non trouve ");
       } else {
-        user.deposer(account_number);
+        print("entrer le montant a deposer");
+        int moneyAdd = null_verification(
+          int.tryParse(stdin.readLineSync() ?? ''),
+        );
+        user.deposer(moneyAdd);
       }
     }
-    // 3.afficher les utilisateurs
+    //3. faire un retrait
     else if (choix == "3") {
+      print("veuillez entrer votre numero de compte");
+      int account_number = null_verification(
+        int.tryParse(stdin.readLineSync() ?? ''),
+      );
+      var user = gestionnaire.rechercherUser(account_number);
+      if (user == null) {
+        print("[ERREUR] compte non trouve ");
+      } else {
+        print("entrer le montant a retirer");
+        int moneyRemove = null_verification(
+          int.tryParse(stdin.readLineSync() ?? ''),
+        );
+        user.retrait(moneyRemove);
+      }
+    }
+    // 4.afficher les utilisateurs
+    else if (choix == "4") {
       gestionnaire.displayUser();
     }
-    // rechercher un utilisateur
-    else if (choix == "4") {
+    // 5. rechercher un utilisateur
+    else if (choix == "5") {
       stdout.write("entrer le numero de compte");
       int num = null_verification(int.tryParse(stdin.readLineSync() ?? ''));
       Client? user = gestionnaire.rechercherUser(num);
@@ -70,8 +91,8 @@ void main() {
         );
       }
     }
-    // quiter la session
-    else if (choix == "5") {
+    // 6. quiter la session
+    else if (choix == "6") {
       print("merci d'avoir utiliser flexBanque. Au revoir ! ");
       break;
     } else {
@@ -115,7 +136,7 @@ class Client {
     } else {
       this.solde -= moneyRemove;
       print(
-        "[SUCCES] depot de ${moneyRemove} effectue avec succes . Nouveau solde : ${this.solde} ",
+        "[SUCCES] retrait  de ${moneyRemove} effectue avec succes . Nouveau solde : ${this.solde} ",
       );
     }
   }
