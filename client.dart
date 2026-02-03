@@ -38,7 +38,7 @@ class Client {
     }
   }
 
-  // Methode to convert objects in map
+  // Method to convert objects in map
 
   Map<String, dynamic> tojson() {
     return {

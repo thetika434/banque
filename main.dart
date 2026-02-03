@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'client.dart';
+import 'gestion.dart';
+import 'validators.dart';
 
 void main() {
   var gestionnaire = Gestion();
@@ -32,10 +35,8 @@ void main() {
           int.tryParse(stdin.readLineSync() ?? ''),
         );
       }
-      gestionnaire.add_user(
-        name,
-        account_number,
-      ); //ajouter un nouvel utilisateur
+      gestionnaire.add_user(name, account_number);
+      gestionnaire.saveData(); //ajouter un nouvel utilisateur
 
       print("enregitrement effectuer avec succes !");
     }
@@ -100,99 +101,4 @@ void main() {
       continue;
     }
   }
-}
-
-// la classe pour representer le client
-
-class Client {
-  String name;
-  int account_number;
-  int solde;
-  Client({required this.name, required this.account_number, this.solde = 0});
-
-  // methode pour deposer de l'argent
-
-  void deposer(int moneyAdd) {
-    while (moneyAdd < 0) {
-      print("votre solde doit etre positif ! (ressayer) : ");
-      moneyAdd = null_verification(int.tryParse(stdin.readLineSync() ?? ''));
-    }
-    this.solde += moneyAdd;
-    print(
-      "[SUCCES] depot de ${moneyAdd} effectue avec succes . Nouveau solde : ${this.solde} ",
-    );
-  }
-  // methode pour faire un retrait
-
-  void retrait(int moneyRemove) {
-    while (moneyRemove < 0) {
-      print("votre solde doit etre positif ! (ressayer) : ");
-      moneyRemove = null_verification(int.tryParse(stdin.readLineSync() ?? ''));
-    }
-    if (moneyRemove > this.solde) {
-      print(
-        "solde insuffisant impossible de faire un retrait (veuillez ressayer)",
-      );
-    } else {
-      this.solde -= moneyRemove;
-      print(
-        "[SUCCES] retrait  de ${moneyRemove} effectue avec succes . Nouveau solde : ${this.solde} ",
-      );
-    }
-  }
-}
-
-//class pour la gestion des clients
-class Gestion {
-  List<Client> data_base = [];
-  // 1. fonction pour ajouter  un  utilisateur
-  void add_user(String name, int number_account) {
-    var le_client = Client(name: name, account_number: number_account);
-    data_base.add(le_client); //ajouter l'objet dans la liste
-  }
-
-  // 2. fonction pour afficher toutes les infos liees aux utilisateurs
-  void displayUser() {
-    print("\n========= LISTE DES CLIENTS =========");
-    if (data_base.isEmpty) {
-      print("il n'ya pas encore de clients dans la base de donnee");
-    } else {
-      for (var client in data_base) {
-        print(
-          "Nom : ${client.name} | n de compte : ${client.account_number} | solde : ${client.solde} FCFA ",
-        );
-      }
-    }
-  }
-
-  // 3. fonction pour rechercher un client en fonction de son account_number
-  Client? rechercherUser(int num) {
-    try {
-      // on utilise le try car au cas ou on ne trouve pas l'objet rechercher dans notre liste cela declenchera une erreur et nous capturons cette erreur pour l'eteindre
-      return data_base.firstWhere(
-        (Client) => Client.account_number == num,
-      ); // c'est la technique pour trouver un objet dans une liste qui a une caracteristique specifique que nous connaissons
-    } catch (e) {
-      return null;
-    }
-  }
-}
-
-// fonction pour verifier si le nonmbre entrer par l'utilisateur est reellement un nombre et l'obliger a en entrer un
-int null_verification(int? number) {
-  while (number == null) {
-    print(" svp entrer quelque chose de valide ");
-    number = int.tryParse(stdin.readLineSync() ?? "");
-  }
-  ;
-  return number;
-}
-
-// .fonction pour empecher l'utilisateur d'entrer a la place d'une chaine un entier ou une chaine vide
-String String_verification(String word) {
-  while (word.isEmpty || int.tryParse(word) != null) {
-    print("entrer quelque chose de correct");
-    word = stdin.readLineSync() ?? '';
-  }
-  return word;
 }
