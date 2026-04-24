@@ -5,6 +5,7 @@ import 'validators.dart';
 
 void main() {
   var gestionnaire = Gestion();
+  gestionnaire.loadData();
 
   while (true) {
     print("============= FlexBanque =============");
@@ -36,7 +37,7 @@ void main() {
         );
       }
       gestionnaire.add_user(name, account_number);
-      gestionnaire.saveData(); //ajouter un nouvel utilisateur
+      gestionnaire.saveData(); // save data persistently
 
       print("enregitrement effectuer avec succes !");
     }
@@ -55,6 +56,7 @@ void main() {
           int.tryParse(stdin.readLineSync() ?? ''),
         );
         user.deposer(moneyAdd);
+        gestionnaire.saveData(); // save data persistently
       }
     }
     //3. faire un retrait
@@ -72,6 +74,7 @@ void main() {
           int.tryParse(stdin.readLineSync() ?? ''),
         );
         user.retrait(moneyRemove);
+        gestionnaire.saveData();
       }
     }
     // 4.afficher les utilisateurs

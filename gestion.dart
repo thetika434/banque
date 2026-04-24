@@ -41,9 +41,45 @@ class Gestion {
     List<Map<String, dynamic>> newList = data_base
         .map((client) => client.tojson())
         .toList();
+    var file = File('comptes.json');
+    String jsonText = jsonEncode(newList); // transforme un objet en String
+
+    file.writeAsStringSync(jsonText);
+    // print(" l'utilisateur vient d'etre en registrer en dur");
+  }
+
+  void loadData() {
     final file = File('comptes.json');
-    String textJson = jsonEncode(newList);
-    file.writeAsStringSync(textJson);
-    print("vous avez etet enregistrer en dur");
+
+    // On vérifie si le fichier existe pour éviter de faire planter le programme
+    if (file.existsSync()) {
+      try {
+        // 1. On lit le texte brut (le String JSON)
+        String textJson = file.readAsStringSync();
+
+        // 2. On transforme ce texte en une liste de Maps dynamiques
+        List<dynamic> jsonList = jsonDecode(textJson);
+        data_base = jsonList
+            .map(
+              (e) => Client(
+                name: e['name'],
+                account_number: e['account_number'],
+                solde: e['solde'],
+              ),
+            )
+            .toList();
+
+        // 3. On transforme chaque Map en un véritable objet "Client"
+        // C'est ici qu'on reconstruit notre base de données en RAM
+
+        print(
+          "\x1B[32m[SYSTÈME] ${data_base.length} comptes chargés avec succès.\x1B[0m",
+        );
+      } catch (e) {
+        print(
+          "\x1B[31m[ERREUR] Impossible de lire le fichier de sauvegarde : $e\x1B[0m",
+        );
+      }
+    }
   }
 }
